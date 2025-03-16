@@ -2,13 +2,13 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"os"
 )
 
-func main() {
-	fmt.Println("config")
+type Config struct {
+	DbURL           string `json:"db_url"`
+	CurrentUserName string `json:"current_user_name"`
 }
 
 func Read() (Config, error) {
@@ -43,7 +43,7 @@ func (c *Config) SetUser(username string) error {
 
 	filePath := home + "/.gatorconfig.json"
 
-  //NOTE: convert struct to json
+	//NOTE: convert struct to json
 	jsonData, err := json.Marshal(&c)
 	if err != nil {
 		return err
