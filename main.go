@@ -21,6 +21,7 @@ func main() {
 		value: &fileContent,
 	}
 
+	fmt.Println("first read", (*globalState).value.CurrentUserName)
 	avialableCommands := commands{
 		value: make(map[string]func(*state, command) error),
 	}

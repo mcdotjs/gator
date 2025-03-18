@@ -1,10 +1,10 @@
-local bufferNum = 31
+local bufferNum = 6
 
 vim.api.nvim_create_autocmd("BufWritePost", {
 	group = vim.api.nvim_create_augroup("MiroSavingGo", { clear = true }),
 	pattern = "*.go",
 	callback = function()
-		vim.fn.jobstart({ "go", "run", ".", "login", "bootssdsdsd" }, {
+		vim.fn.jobstart({ "go", "run", ".", "login", "lane" }, {
 			stdout_buffered = true,
 			on_stdout = function(_, data)
 				if data then
