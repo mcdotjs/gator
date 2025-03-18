@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 )
+import _ "github.com/lib/pq"
 
 type state struct {
 	value *config.Config
