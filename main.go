@@ -1,15 +1,18 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/mcdotjs/blog_aggregator/internal/config"
+	"github.com/mcdotjs/blog_aggregator/internal/database"
 	"log"
 	"os"
 )
 import _ "github.com/lib/pq"
 
 type state struct {
-	value *config.Config
+	db  *database.Queries
+	cfg *config.Config
 }
 
 func main() {
@@ -18,11 +21,13 @@ func main() {
 		log.Fatalln("Problem with reading file")
 	}
 
+	db, err := sql.Open("postgres", fileContent.DbURL)
+	dbQueries := database.New(db)
 	globalState := &state{
-		value: &fileContent,
+		cfg: &fileContent,
 	}
 
-	fmt.Println("first read", (*globalState).value.CurrentUserName)
+	fmt.Println("first read", (*globalState).cfg.CurrentUserName)
 	avialableCommands := commands{
 		value: make(map[string]func(*state, command) error),
 	}
@@ -48,6 +53,6 @@ func main() {
 	if err != nil {
 		fmt.Println("Problem with reading file")
 	}
-	fmt.Println("second read", (*globalState).value.CurrentUserName)
+	fmt.Println("second read", (*globalState).cfg.CurrentUserName)
 
 }
