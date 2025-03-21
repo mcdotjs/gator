@@ -25,6 +25,7 @@ func main() {
 	dbQueries := database.New(db)
 	globalState := &state{
 		cfg: &fileContent,
+		db:  dbQueries,
 	}
 
 	fmt.Println("first read", (*globalState).cfg.CurrentUserName)
@@ -33,6 +34,7 @@ func main() {
 	}
 
 	avialableCommands.register("login", handlerLogin)
+	avialableCommands.register("register", handlerRegister)
 	if len(os.Args) < 2 {
 		log.Fatal("Usage: cli <command> [args...]")
 		return
