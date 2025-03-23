@@ -40,6 +40,7 @@ func main() {
 	avialableCommands.register("users", handlerGetUsers)
 	avialableCommands.register("agg", handlerFeeds)
 	avialableCommands.register("addfeed", addFeed)
+	avialableCommands.register("feeds", getFeeds)
 
 	if len(os.Args) < 2 {
 		log.Fatal("Usage: cli <command> [args...]")

@@ -37,3 +37,26 @@ func addFeed(s *state, cmd command) error {
 	os.Exit(0)
 	return nil
 }
+
+func getFeeds(s *state, cmd command) error {
+	context := context.Background()
+	feeds, err := s.db.GetFeeds(context)
+	if err != nil {
+		os.Exit(1)
+		fmt.Println(cmd.Name, "error")
+		return err
+	}
+	for _, feed := range feeds {
+
+		user, err := s.db.GetUserById(context, feed.UserID)
+		if err != nil {
+			os.Exit(1)
+			fmt.Println(cmd.Name, "error get user by id")
+			return err
+		}
+		fmt.Println(feed.Name)
+		fmt.Println(feed.Url)
+		fmt.Println(user.Name)
+	}
+	return nil
+}
