@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 )
+
 import _ "github.com/lib/pq"
 
 type state struct {
@@ -37,6 +38,8 @@ func main() {
 	avialableCommands.register("register", handlerRegister)
 	avialableCommands.register("reset", handlerReset)
 	avialableCommands.register("users", handlerGetUsers)
+	avialableCommands.register("agg", handlerFeeds)
+
 	if len(os.Args) < 2 {
 		log.Fatal("Usage: cli <command> [args...]")
 		return
