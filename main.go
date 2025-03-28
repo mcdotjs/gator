@@ -29,7 +29,6 @@ func main() {
 		db:  dbQueries,
 	}
 
-	fmt.Println("first read", (*globalState).cfg.CurrentUserName)
 	avialableCommands := commands{
 		value: make(map[string]func(*state, command) error),
 	}
@@ -41,6 +40,8 @@ func main() {
 	avialableCommands.register("agg", handlerFeeds)
 	avialableCommands.register("addfeed", addFeed)
 	avialableCommands.register("feeds", getFeeds)
+	avialableCommands.register("follow", follow)
+	avialableCommands.register("following", following)
 
 	if len(os.Args) < 2 {
 		log.Fatal("Usage: cli <command> [args...]")
@@ -62,6 +63,5 @@ func main() {
 	if err != nil {
 		fmt.Println("Problem with reading file")
 	}
-	fmt.Println("second read", (*globalState).cfg.CurrentUserName)
 
 }
