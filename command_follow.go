@@ -9,14 +9,9 @@ import (
 	"time"
 )
 
-func following(s *state, cmd command) error {
+func following(s *state, cmd command, user database.User) error {
 	context := context.Background()
-	logedUser, err := s.db.GetUser(context, s.cfg.CurrentUserName)
-	if err != nil {
-		os.Exit(1)
-		return err
-	}
-	feeds, err := s.db.GetFeedFollowsForUser(context, logedUser.ID)
+	feeds, err := s.db.GetFeedFollowsForUser(context, user.ID)
 	if err != nil {
 		os.Exit(1)
 		return err
@@ -27,7 +22,7 @@ func following(s *state, cmd command) error {
 	return nil
 }
 
-func follow(s *state, cmd command) error {
+func follow(s *state, cmd command, user database.User) error {
 	if len(cmd.Args) == 0 {
 		err := fmt.Errorf("We want argument")
 		os.Exit(1)
@@ -41,17 +36,11 @@ func follow(s *state, cmd command) error {
 		return err
 	}
 
-	logedUser, err := s.db.GetUser(context, s.cfg.CurrentUserName)
-	if err != nil {
-		os.Exit(1)
-		return err
-	}
-
 	newFoolowFeed := &database.CreateFeedFollowParams{
 		ID:        uuid.New(),
 		UpdatedAt: time.Now(),
 		CreatedAt: time.Now(),
-		UserID:    logedUser.ID,
+		UserID:    user.ID,
 		FeedID:    feedByUrl.ID,
 	}
 

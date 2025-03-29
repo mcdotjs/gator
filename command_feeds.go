@@ -9,19 +9,13 @@ import (
 	"time"
 )
 
-func addFeed(s *state, cmd command) error {
+func addFeed(s *state, cmd command, user database.User) error {
+	fmt.Println("addFeed", cmd.Name, user)
 	if len(cmd.Args) < 2 {
 		err := fmt.Errorf("We want two arguments")
-		os.Exit(1)
 		return err
 	}
 	context := context.Background()
-
-	logedUser, err := s.db.GetUser(context, s.cfg.CurrentUserName)
-	if err != nil {
-		os.Exit(1)
-		return err
-	}
 
 	newfeed := &database.CreateFeedParams{
 		ID:        uuid.New(),
@@ -29,12 +23,11 @@ func addFeed(s *state, cmd command) error {
 		CreatedAt: time.Now(),
 		Name:      cmd.Args[0],
 		Url:       cmd.Args[1],
-		UserID:    logedUser.ID,
+		UserID:    user.ID,
 	}
 
 	feed, err := s.db.CreateFeed(context, *newfeed)
 	if err != nil {
-		os.Exit(1)
 		return err
 	}
 
@@ -42,7 +35,7 @@ func addFeed(s *state, cmd command) error {
 		ID:        uuid.New(),
 		UpdatedAt: time.Now(),
 		CreatedAt: time.Now(),
-		UserID:    logedUser.ID,
+		UserID:    user.ID,
 		FeedID:    feed.ID,
 	}
 
@@ -55,7 +48,6 @@ func getFeeds(s *state, cmd command) error {
 	context := context.Background()
 	feeds, err := s.db.GetFeeds(context)
 	if err != nil {
-		os.Exit(1)
 		fmt.Println(cmd.Name, "error")
 		return err
 	}
@@ -63,7 +55,6 @@ func getFeeds(s *state, cmd command) error {
 
 		user, err := s.db.GetUserById(context, feed.UserID)
 		if err != nil {
-			os.Exit(1)
 			return err
 		}
 		fmt.Println(feed.Name)
