@@ -48,3 +48,17 @@ func follow(s *state, cmd command, user database.User) error {
 	os.Exit(0)
 	return nil
 }
+
+func unfollow(s *state, cmd command, user database.User) error {
+	context := context.Background()
+	p := &database.DeleteFeedFollowWithUrlForUserParams{
+		UserID: user.ID,
+		Url:    cmd.Args[0],
+	}
+	deletedFeed, err := s.db.DeleteFeedFollowWithUrlForUser(context, *p)
+	if err != nil {
+		return err
+	}
+	fmt.Println("this feed follow was deleted ", deletedFeed)
+	return nil
+}
