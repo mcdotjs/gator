@@ -63,3 +63,37 @@ func getFeeds(s *state, cmd command) error {
 	}
 	return nil
 }
+
+func scrapeFeeds(s *state, cmd command) error {
+	context := context.Background()
+	user, err := s.db.GetUser(context, s.cfg.CurrentUserName)
+	fmt.Println(user.Name)
+	if err != nil {
+		return fmt.Errorf("User neni v db: %w", err)
+	}
+
+	lastFeed, err := s.db.GetNextFeedToFetch(context, user.ID)
+	if err != nil {
+		return fmt.Errorf("problem getNextFeed: %w", err)
+	}
+
+	params := &database.MarkFeedFetchedParams{
+		ID:     lastFeed.ID,
+		UserID: user.ID,
+	}
+
+	feed, err := s.db.MarkFeedFetched(context, *params)
+	if err != nil {
+		return fmt.Errorf("Problem whith MarkFeedFetched: %w", err)
+	}
+
+	feeds, err := fetchFeed(context, feed.Url)
+	if err != nil {
+		return fmt.Errorf("Problem fetch feed by url: %w", err)
+	}
+
+	for _, v := range feeds.Channel.Item {
+		fmt.Println(v.Title)
+	}
+	return nil
+}

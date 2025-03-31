@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"time"
 )
 
 type RSSFeed struct {
@@ -27,6 +28,21 @@ type RSSItem struct {
 }
 
 func handlerFeeds(s *state, cmd command) error {
+	durationString := cmd.Args[0]
+	t, err := time.ParseDuration(durationString)
+	if err != nil {
+		return fmt.Errorf("agg command error: %w", err)
+	}
+	fmt.Printf("Collecting feeds every %v\n", durationString)
+	ticker := time.NewTicker(t)
+	for ; ; <-ticker.C {
+		if err := scrapeFeeds(s, cmd); err != nil {
+			fmt.Printf("Error whith scraping feed %v\n", err)
+		}
+	}
+}
+
+func handlerFeedsORIGINAL(s *state, cmd command) error {
 	context := context.Background()
 	//;cmd.Args[0]
 	val, err := fetchFeed(context, "https://www.wagslane.dev/index.xml")
