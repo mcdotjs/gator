@@ -38,28 +38,28 @@ goose postgres <connection_string> up
 
 ## commands
 
-# blog_aggregator register my_name
+### blog_aggregator register my_name
 
-# blog_aggregator login my_name
+### blog_aggregator login my_name
 
-# blog_aggregator feeds
+### blog_aggregator feeds
 > list of all feeds (creator, name of feed, feed url)
  
-# blog_aggregator addfeed "Lanes Blog" "https://www.wagslane.dev/index.xml"
+### blog_aggregator addfeed "Lanes Blog" "https://www.wagslane.dev/index.xml"
 > loged user adding feed
 
-# blog_aggregator follow <feed url>
+### blog_aggregator follow <feed url>
 > follow feed of another user
 
-# blog_aggregator unfollow <feed url>
+### blog_aggregator unfollow <feed url>
 > unfollow feed with url
 
-# blog_aggregator following
+### blog_aggregator following
 > list of my feeds (titles)
 
-# blog_aggregator agg <time interval>
+### blog_aggregator agg <time interval>
 > time interval is string: 1s, 3s, 3h ...
 > fetch the actual posts from the feed URLs and store them in our database
 
-# blog_aggregator browse <number of posts to display>
+### blog_aggregator browse <number of posts to display>
 > view all the posts from the feeds the user follows
