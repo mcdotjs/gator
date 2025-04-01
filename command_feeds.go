@@ -2,10 +2,14 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/mcdotjs/blog_aggregator/internal/database"
+	"log"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -86,6 +90,7 @@ func scrapeFeeds(s *state, cmd command) error {
 	if err != nil {
 		return fmt.Errorf("Problem whith MarkFeedFetched: %w", err)
 	}
+	log.Printf("Scraping feed: %s for user: %s", feed.Url, user.Name)
 
 	feeds, err := fetchFeed(context, feed.Url)
 	if err != nil {
@@ -93,7 +98,76 @@ func scrapeFeeds(s *state, cmd command) error {
 	}
 
 	for _, v := range feeds.Channel.Item {
-		fmt.Println(v.Title)
+		//NOTE:
+		// Convert string to sql.NullString
+		description := sql.NullString{
+			String: v.Description,
+			Valid:  v.Description != "", // Valid if non-empty
+		}
+
+		//NOTE:
+		// Parse v.PubDate into time.Time, and convert to sql.NullTime
+		var publishedAt sql.NullTime
+		if pubTime, err := time.Parse(time.RFC1123, v.PubDate); err == nil {
+			publishedAt = sql.NullTime{
+				Time:  pubTime,
+				Valid: true,
+			}
+		} else {
+			//NOTE:
+			// If parsing fails, leave publishedAt as invalid
+			publishedAt = sql.NullTime{
+				Time:  time.Time{},
+				Valid: false,
+			}
+		}
+		postCreateParams := &database.CreatePostParams{
+			ID:          uuid.New(),
+			CreatedAt:   time.Now().UTC(),
+			UpdatedAt:   time.Now().UTC(),
+			Title:       v.Title,
+			Url:         v.Link,
+			FeedID:      feed.ID,
+			Description: description,
+			PublishedAt: publishedAt,
+		}
+
+		_, err := s.db.CreatePost(context, *postCreateParams)
+		if err != nil {
+			if strings.Contains(err.Error(), "duplicate key value violates unique constraint") {
+				continue
+			}
+			log.Printf("Couldn't create post: %v", err)
+			continue
+		}
+
+	}
+	return nil
+}
+
+func browsePosts(s *state, cmd command, user database.User) error {
+	context := context.Background()
+	limit := 2
+	if len(cmd.Args) == 1 {
+		if specifiedLimit, err := strconv.Atoi(cmd.Args[0]); err == nil {
+			limit = specifiedLimit
+		} else {
+			return fmt.Errorf("invalid limit: %w", err)
+		}
+	}
+	log.Printf("User %d requested to browse posts with limit %d", user.Name, limit)
+	params := &database.GetPostsForUserTroughJoinParams{
+		UserID: user.ID,
+		Limit:  int32(limit),
+	}
+
+	posts, err := s.db.GetPostsForUserTroughJoin(context, *params)
+	if err != nil {
+		return fmt.Errorf("browse posts error: %w", err)
+	}
+
+	for _, p := range posts {
+		fmt.Println(p.Title)
 	}
 	return nil
 }

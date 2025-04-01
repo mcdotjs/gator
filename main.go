@@ -44,6 +44,7 @@ func main() {
 	avialableCommands.register("unfollow", middlewareLoggedIn(unfollow))
 	avialableCommands.register("following", middlewareLoggedIn(following))
 	avialableCommands.register("scrape", scrapeFeeds)
+	avialableCommands.register("browse", middlewareLoggedIn(browsePosts))
 
 	if len(os.Args) < 2 {
 		log.Fatal("Usage: cli <command> [args...]")
