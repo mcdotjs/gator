@@ -36,7 +36,8 @@ goose postgres <connection_string> up
 ```
 
 
-### Avialable commands
+
+## Avialable commands
 
 #### register my_name
 
