@@ -5,7 +5,7 @@
 - Follow and unfollow RSS feeds that other users have added
 - View summaries of the aggregated posts in the terminal, with a link to the full post
 
-## setup 
+## Setup 
 for running you need postgre (15 and later) and go 
 
 1. create ~/.gatorconfig.json, with the following content:
@@ -36,7 +36,7 @@ goose postgres <connection_string> up
 ```
 
 
-### avialable commands
+### Avialable commands
 
 #### register my_name
 
