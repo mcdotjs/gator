@@ -1,6 +1,4 @@
-## blog aggregator in Go
-
-for running you need postgre (15 and later) and go 
+## Blog aggregator in Go
 
 - Add RSS feeds from across the internet to be collected
 - Store the collected posts in a PostgreSQL database
@@ -8,6 +6,8 @@ for running you need postgre (15 and later) and go
 - View summaries of the aggregated posts in the terminal, with a link to the full post
 
 ## setup 
+for running you need postgre (15 and later) and go 
+
 1. create ~/.gatorconfig.json, with the following content:
 
 ```json
@@ -36,30 +36,30 @@ goose postgres <connection_string> up
 ```
 
 
-## commands
+### avialable commands
 
-### blog_aggregator register my_name
+#### register my_name
 
-### blog_aggregator login my_name
+#### login my_name
 
-### blog_aggregator feeds
+#### feeds
 > list of all feeds (creator, name of feed, feed url)
  
-### blog_aggregator addfeed "Lanes Blog" "https://www.wagslane.dev/index.xml"
+#### addfeed "Lanes Blog" "https://www.wagslane.dev/index.xml"
 > loged user adding feed
 
-### blog_aggregator follow <feed url>
+#### follow <feed url>
 > follow feed of another user
 
-### blog_aggregator unfollow <feed url>
+#### unfollow <feed url>
 > unfollow feed with url
 
-### blog_aggregator following
+#### following
 > list of my feeds (titles)
 
-### blog_aggregator agg <time interval>
+#### agg <time interval>
 > time interval is string: 1s, 3s, 3h ...
 > fetch the actual posts from the feed URLs and store them in our database
 
-### blog_aggregator browse <number of posts to display>
+#### browse <number of posts to display>
 > view all the posts from the feeds the user follows
